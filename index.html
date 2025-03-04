@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шифрование и расшифровка текста</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333; /* Темно-серый фон */
+            color: #fff; /* Белый текст */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Высота на весь экран */
+        }
+        .container {
+            background-color: #444; /* Серый контейнер */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 90%; /* Ширина контейнера 90% от экрана */
+            max-width: 800px; /* Максимальная ширина контейнера */
+            height: 90vh; /* Высота контейнера 90% от экрана */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #666; /* Темная граница */
+            background-color: #555; /* Темный фон текстового поля */
+            color: #fff; /* Белый текст */
+            resize: none;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            border: 1px solid #666; /* Темная граница */
+            background-color: #004080; /* Темно-синяя кнопка */
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #00264d; /* Еще более темный синий при наведении */
+        }
+        h1, h2 {
+            margin-bottom: 20px;
+            color: #fff; /* Белый заголовок */
+        }
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .mode-selector button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Шифрование и расшифровка текста</h1>
+        <textarea id="inputText" placeholder="Введите текст..."></textarea>
+        <select id="cipherType">
+            <option value="caesar">Шифр Цезаря</option>
+            <option value="morse">Код Морзе</option>
+            <option value="binary">Бинарный код</option>
+        </select>
+        <div class="mode-selector">
+            <button onclick="processText('encrypt')">Зашифровать</button>
+            <button onclick="processText('decrypt')">Расшифровать</button>
+        </div>
+        <h2>Результат:</h2>
+        <textarea id="outputText" readonly></textarea>
+    </div>
+
+    <script>
+        function processText(mode) {
+            const inputText = document.getElementById('inputText').value;
+            const cipherType = document.getElementById('cipherType').value;
+            let outputText = '';
+
+            if (cipherType === 'caesar') {
+                outputText = caesarCipher(inputText, 3, mode === 'encrypt'); // Сдвиг на 3 символа
+            } else if (cipherType === 'morse') {
+                outputText = mode === 'encrypt' ? morseEncode(inputText) : morseDecode(inputText);
+            } else if (cipherType === 'binary') {
+                outputText = mode === 'encrypt' ? binaryEncode(inputText) : binaryDecode(inputText);
+            }
+
+            document.getElementById('outputText').value = outputText;
+        }
+
+        function caesarCipher(str, shift, encrypt) {
+            const ruAlphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+            const enAlphabet = 'abcdefghijklmnopqrstuvwxyz';
+            const ruAlphabetUpper = ruAlphabet.toUpperCase();
+            const enAlphabetUpper = enAlphabet.toUpperCase();
+
+            return str.split('').map(char => {
+                if (ruAlphabet.includes(char)) {
+                    return shiftChar(char, shift, encrypt, ruAlphabet);
+                } else if (ruAlphabetUpper.includes(char)) {
+                    return shiftChar(char, shift, encrypt, ruAlphabetUpper);
+                } else if (enAlphabet.includes(char)) {
+                    return shiftChar(char, shift, encrypt, enAlphabet);
+                } else if (enAlphabetUpper.includes(char)) {
+                    return shiftChar(char, shift, encrypt, enAlphabetUpper);
+                } else {
+                    return char; // Не изменяем символы, не входящие в алфавит
+                }
+            }).join('');
+        }
+
+        function shiftChar(char, shift, encrypt, alphabet) {
+            const shiftAmount = encrypt ? shift : -shift;
+            const index = alphabet.indexOf(char);
+            const newIndex = (index + shiftAmount + alphabet.length) % alphabet.length;
+            return alphabet[newIndex];
+        }
+
+        function morseEncode(text) {
+            const morseMap = {
+                'А': '.-', 'Б': '-...', 'В': '.--', 'Г': '--.', 'Д': '-..', 'Е': '.', 'Ж': '...-',
+                'З': '--..', 'И': '..', 'Й': '.---', 'К': '-.-', 'Л': '.-..', 'М': '--', 'Н': '-.',
+                'О': '---', 'П': '.--.', 'Р': '.-.', 'С': '...', 'Т': '-', 'У': '..-', 'Ф': '..-.',
+                'Х': '....', 'Ц': '-.-.', 'Ч': '---.', 'Ш': '----', 'Щ': '--.-', 'Ъ': '--.--',
+                'Ы': '-.--', 'Ь': '..--', 'Э': '.-.-', 'Ю': '..--..', 'Я': '..--.',
+                ' ': '/', '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-',
+                '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.'
+            };
+
+            return text.toUpperCase().split('').map(char => morseMap[char] || '').join(' ');
+        }
+
+        function morseDecode(morseCode) {
+            const morseMap = {
+                '.-': 'А', '-...': 'Б', '.--': 'В', '--.': 'Г', '-..': 'Д', '.': 'Е', '...-': 'Ж',
+                '--..': 'З', '..': 'И', '.---': 'Й', '-.-': 'К', '.-..': 'Л', '--': 'М', '-.': 'Н',
+                '---': 'О', '.--.': 'П', '.-.': 'Р', '...': 'С', '-': 'Т', '..-': 'У', '..-.': 'Ф',
+                '....': 'Х', '-.-.': 'Ц', '---.': 'Ч', '----': 'Ш', '--.-': 'Щ', '--.--': 'Ъ',
+                '-.--': 'Ы', '..--': 'Ь', '.-.-': 'Э', '..--..': 'Ю', '..--.': 'Я',
+                '/': ' ', '-----': '0', '.----': '1', '..---': '2', '...--': '3', '....-': '4',
+                '.....': '5', '-....': '6', '--...': '7', '---..': '8', '----.': '9'
+            };
+
+            return morseCode.split(' ').map(code => morseMap[code] || '').join('');
+        }
+
+        function binaryEncode(text) {
+            return text.split('').map(char => {
+                return char.charCodeAt(0).toString(2).padStart(8, '0');
+            }).join(' ');
+        }
+
+        function binaryDecode(binary) {
+            return binary.split(' ').map(bin => {
+                return String.fromCharCode(parseInt(bin, 2));
+            }).join('');
+        }
+    </script>
+</body>
+</html>
