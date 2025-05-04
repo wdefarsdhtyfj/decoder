@@ -424,7 +424,12 @@
     }
 
     function minecraftDecode(text) {
-      return 'Декодирование SGA визуально — в игре не существует официального расшифровщика.';
+     const sga = "ᔑʖᓵ↸ᒷ⎓⊣⍑╎⋮ꖌꖎᒲリ𝙹!¡∷ᓭℸ ̣⚍⍊∴ ̇/||⨅";
+      const abc = "abcdefghijklmnopqrstuvwxyz";
+      return text.toLowerCase().split('').map(ch => {
+        const i = sga.indexOf(ch);
+        return i >= 0 ? abc[i] : ch;
+      }).join('');
     }
 
     window.onload = updateCipherInfo;
