@@ -1,174 +1,385 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Шифрование и расшифровка текста</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #333; /* Темно-серый фон */
-            color: #fff; /* Белый текст */
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; /* Высота на весь экран */
-        }
-        .container {
-            background-color: #444; /* Серый контейнер */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            width: 90%; /* Ширина контейнера 90% от экрана */
-            max-width: 800px; /* Максимальная ширина контейнера */
-            height: 90vh; /* Высота контейнера 90% от экрана */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #666; /* Темная граница */
-            background-color: #555; /* Темный фон текстового поля */
-            color: #fff; /* Белый текст */
-            resize: none;
-        }
-        select, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 4px;
-            border: 1px solid #666; /* Темная граница */
-            background-color: #004080; /* Темно-синяя кнопка */
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #00264d; /* Еще более темный синий при наведении */
-        }
-        h1, h2 {
-            margin-bottom: 20px;
-            color: #fff; /* Белый заголовок */
-        }
-        .mode-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .mode-selector button {
-            flex: 1;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Шифрование и расшифрование текста</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #333;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: background 0.5s;
+    }
+    .container {
+      background-color: #444;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      width: 90%;
+      max-width: 800px;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #666;
+      background-color: #555;
+      color: #fff;
+      resize: none;
+    }
+    select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 4px;
+      border: 1px solid #666;
+      background-color: #004080;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #00264d;
+    }
+    h1, h2 {
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .mode-selector {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .mode-selector button {
+      flex: 1;
+    }
+    .info-panel {
+      background-color: #555;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 15px;
+      width: 100%;
+      border: 1px solid #666;
+    }
+    .info-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .info-content {
+      color: #ddd;
+      font-size: 14px;
+    }
+    .main-content {
+      width: 100%;
+    }
+    a.minecraft-poem-link {
+      color: #8cf;
+      display: block;
+      margin-top: 10px;
+      text-decoration: underline;
+    }
+
+    /* Minecraft Theme */
+    .theme-minecraft {
+      background-image: url('https://avatars.mds.yandex.net/i?id=d04c67b798fd7035de97a5780f95cdd22ab31d1a-4033951-images-thumbs&n=13');
+      background-size: cover;
+      background-position: center;
+    }
+    .theme-minecraft .container {
+      background-color: rgba(0, 0, 0, 0.6);
+      border: 2px solid #aaffaa;
+    }
+    .theme-minecraft button,
+    .theme-minecraft select,
+    .theme-minecraft textarea {
+      background-color: #3c3c3c;
+      border: 2px solid #aaffaa;
+      font-family: 'Minecraftia', monospace;
+      color: #aaffaa;
+      font-weight: bold;
+    }
+
+    /* Wingdings / Undertale Theme */
+    /* Wingdings / Undertale Theme */
+    .theme-wingdings {
+      background: url('https://avatars.mds.yandex.net/i?id=d73117565b163727f8cf17bc6ba2ff24_l-5363169-images-thumbs&n=13') center center / cover no-repeat; /* фон Undertale */
+      color: #fff;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .theme-wingdings .container {
+      background-color: rgba(0, 0, 0, 0.7);
+      border: 2px solid #fff;
+      box-shadow: 0 0 20px #fff;
+    }
+    
+    .theme-wingdings textarea,
+    .theme-wingdings select,
+    .theme-wingdings button {
+      background-color: #000;
+      border: 2px solid #fff;
+      color: #fff;
+      font-weight: bold;
+    }
+    
+    .theme-wingdings button {
+      text-transform: none;
+    }
+    
+    /* ✅ Only output area switches to Wingdings font */
+    .theme-wingdings #outputText {
+      font-family: 'Wingdings', sans-serif;
+    }
+
+
+
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Шифрование и расшифровка текста</h1>
-        <textarea id="inputText" placeholder="Введите текст..."></textarea>
-        <select id="cipherType">
-            <option value="caesar">Шифр Цезаря</option>
-            <option value="morse">Код Морзе</option>
-            <option value="binary">Бинарный код</option>
-        </select>
-        <div class="mode-selector">
-            <button onclick="processText('encrypt')">Зашифровать</button>
-            <button onclick="processText('decrypt')">Расшифровать</button>
+  <div class="container">
+    <h1>Шифрование и расшифрование текста</h1>
+    <div class="main-content">
+      <textarea id="inputText" placeholder="Введите текст..."></textarea>
+      <select id="cipherType" onchange="updateCipherInfo()">
+        <option value="caesar">Шифр Цезаря</option>
+        <option value="morse">Код Морзе</option>
+        <option value="binary">Бинарный код</option>
+      </select>
+      <div class="mode-selector">
+        <button onclick="processText('encrypt')">Зашифровать</button>
+        <button onclick="processText('decrypt')">Расшифровать</button>
+      </div>
+      <h2>Результат:</h2>
+      <textarea id="outputText" readonly></textarea>
+      <div class="info-panel" id="infoPanel">
+        <div class="info-title">Информация о шифре:</div>
+        <div class="info-content" id="cipherInfo">
+          Шифр Цезаря — это вид шифра подстановки, в котором каждый символ заменяется другим с фиксированным сдвигом.
         </div>
-        <h2>Результат:</h2>
-        <textarea id="outputText" readonly></textarea>
+      </div>
+      <a id="minecraftLink" href="https://minecraft.fandom.com/wiki/End_Poem" target="_blank" class="minecraft-poem-link" style="display: none;">
+        Читать поэму из титров Minecraft →
+      </a>
     </div>
+  </div>
 
-    <script>
-        function processText(mode) {
-            const inputText = document.getElementById('inputText').value;
-            const cipherType = document.getElementById('cipherType').value;
-            let outputText = '';
+  <script>
+    const cipherInfoMap = {
+      'caesar': 'Шифр Цезаря — это вид шифра подстановки с постоянным сдвигом. Здесь используется сдвиг на 3.',
+      'morse': 'Код Морзе представляет символы с помощью точек и тире.',
+      'binary': 'Бинарный код — представление текста в виде 0 и 1.',
+      'wingdings': 'Wingdings — декоративный шрифт, используемый в загадочных сообщениях в стиле Undertale.',
+      'minecraft': 'Шрифт Minecraft использует символы из Standard Galactic Alphabet, встречающиеся на зачарованных книгах в игре.'
+    };
 
-            if (cipherType === 'caesar') {
-                outputText = caesarCipher(inputText, 3, mode === 'encrypt'); // Сдвиг на 3 символа
-            } else if (cipherType === 'morse') {
-                outputText = mode === 'encrypt' ? morseEncode(inputText) : morseDecode(inputText);
-            } else if (cipherType === 'binary') {
-                outputText = mode === 'encrypt' ? binaryEncode(inputText) : binaryDecode(inputText);
-            }
+    const unlockedCiphers = {
+      wingdings: false,
+      minecraft: false
+    };
 
-            document.getElementById('outputText').value = outputText;
+    const minecraftPhrases = [
+      "chicken jockey",
+      "minecraft",
+      "i am steve",
+      "and the universe said i love you"
+    ];
+
+    function updateCipherOptions() {
+      const select = document.getElementById('cipherType');
+      if (unlockedCiphers.wingdings && !Array.from(select.options).some(o => o.value === 'wingdings')) {
+        const opt = document.createElement('option');
+        opt.value = 'wingdings';
+        opt.textContent = 'Wingdings';
+        select.appendChild(opt);
+      }
+      if (unlockedCiphers.minecraft && !Array.from(select.options).some(o => o.value === 'minecraft')) {
+        const opt = document.createElement('option');
+        opt.value = 'minecraft';
+        opt.textContent = 'Minecraft (SGA)';
+        select.appendChild(opt);
+      }
+    }
+
+    function updateCipherInfo() {
+      const cipherType = document.getElementById('cipherType').value;
+      document.getElementById('cipherInfo').textContent = cipherInfoMap[cipherType] || '';
+      document.getElementById('minecraftLink').style.display = (cipherType === 'minecraft') ? 'block' : 'none';
+
+      // Тема
+      document.body.classList.remove('theme-minecraft', 'theme-wingdings');
+      if (cipherType === 'minecraft') document.body.classList.add('theme-minecraft');
+      if (cipherType === 'wingdings') document.body.classList.add('theme-wingdings');
+    }
+
+    function processText(mode) {
+      const inputText = document.getElementById('inputText').value.trim();
+      checkUnlocks(inputText.toLowerCase());
+      const cipherType = document.getElementById('cipherType').value;
+      let output = '';
+
+      if (cipherType === 'caesar') {
+        output = caesarCipher(inputText, 3, mode === 'encrypt');
+      } else if (cipherType === 'morse') {
+        output = mode === 'encrypt' ? morseEncode(inputText) : morseDecode(inputText);
+      } else if (cipherType === 'binary') {
+        output = mode === 'encrypt' ? binaryEncode(inputText) : binaryDecode(inputText);
+      } else if (cipherType === 'wingdings') {
+        output = mode === 'encrypt' ? wingdingsEncode(inputText) : wingdingsDecode(inputText);
+      } else if (cipherType === 'minecraft') {
+        output = mode === 'encrypt' ? minecraftEncode(inputText) : minecraftDecode(inputText);
+      }
+
+      document.getElementById('outputText').value = output;
+    }
+
+    function caesarCipher(str, shift, encrypt) {
+      const ru = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+      const en = 'abcdefghijklmnopqrstuvwxyz';
+      const RU = ru.toUpperCase();
+      const EN = en.toUpperCase();
+
+      return str.split('').map(ch => {
+        if (ru.includes(ch)) return shiftChar(ch, shift, encrypt, ru);
+        if (RU.includes(ch)) return shiftChar(ch, shift, encrypt, RU);
+        if (en.includes(ch)) return shiftChar(ch, shift, encrypt, en);
+        if (EN.includes(ch)) return shiftChar(ch, shift, encrypt, EN);
+        return ch;
+      }).join('');
+    }
+
+    function shiftChar(char, shift, encrypt, alphabet) {
+      const index = alphabet.indexOf(char);
+      const offset = encrypt ? shift : -shift;
+      const newIndex = (index + offset + alphabet.length) % alphabet.length;
+      return alphabet[newIndex];
+    }
+
+    function morseEncode(text) {
+      const map = {
+        'А': '.-', 'Б': '-...', 'В': '.--', 'Г': '--.', 'Д': '-..', 'Е': '.', 'Ж': '...-',
+        'З': '--..', 'И': '..', 'Й': '.---', 'К': '-.-', 'Л': '.-..', 'М': '--', 'Н': '-.',
+        'О': '---', 'П': '.--.', 'Р': '.-.', 'С': '...', 'Т': '-', 'У': '..-', 'Ф': '..-.',
+        'Х': '....', 'Ц': '-.-.', 'Ч': '---.', 'Ш': '----', 'Щ': '--.-', 'Ъ': '.--.-.',
+        'Ы': '-.--', 'Ь': '-..-', 'Э': '..-..', 'Ю': '..--', 'Я': '.-.-',
+        ' ': '/', '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-',
+        '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.'
+      };
+      return text.toUpperCase().split('').map(ch => map[ch] || '').join(' ');
+    }
+
+    function morseDecode(code) {
+      const morseMap = {
+        '.-': 'А', '-...': 'Б', '.--': 'В', '--.': 'Г', '-..': 'Д', '.': 'Е', '...-': 'Ж',
+        '--..': 'З', '..': 'И', '.---': 'Й', '-.-': 'К', '.-..': 'Л', '--': 'М', '-.': 'Н',
+        '---': 'О', '.--.': 'П', '.-.': 'Р', '...': 'С', '-': 'Т', '..-': 'У', '..-.': 'Ф',
+        '....': 'Х', '-.-.': 'Ц', '---.': 'Ч', '----': 'Ш', '--.-': 'Щ', '.--.-.': 'Ъ',
+        '-.--': 'Ы', '-..-': 'Ь', '..-..': 'Э', '..--': 'Ю', '.-.-': 'Я',
+        '/': ' ', '-----': '0', '.----': '1', '..---': '2', '...--': '3', '....-': '4',
+        '.....': '5', '-....': '6', '--...': '7', '---..': '8', '----.': '9'
+      };
+      return code.split(' ').map(sym => morseMap[sym] || '').join('');
+    }
+
+    function binaryEncode(text) {
+      return text.split('').map(ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+    }
+
+    function binaryDecode(binary) {
+      return binary.split(' ').map(b => String.fromCharCode(parseInt(b, 2))).join('');
+    }
+
+    function wingdingsEncode(text) {
+      return text.split('').map(char => String.fromCharCode(char.charCodeAt(0) + 0xF000)).join('');
+    }
+
+    function wingdingsDecode(text) {
+      const sga = "";
+      const abc = "abcdefghijklmnopqrstuvwxyz";
+      return text.split('').map(char => {
+        const code = char.charCodeAt(0);
+        return code >= 0xF000 ? String.fromCharCode(code - 0xF000) : char;
+      }).join('');
+    }
+
+    function minecraftEncode(text) {
+      const sga = "ᔑʖᓵ↸ᒷ⎓⊣⍑╎⋮ꖌꖎᒲリ𝙹!¡∷ᓭℸ ̣⚍⍊∴ ̇/||⨅";
+      const abc = "abcdefghijklmnopqrstuvwxyz";
+      return text.toLowerCase().split('').map(ch => {
+        const i = abc.indexOf(ch);
+        return i >= 0 ? sga[i] : ch;
+      }).join('');
+    }
+
+    function minecraftDecode(text) {
+      return 'Декодирование SGA визуально — в игре не существует официального расшифровщика.';
+    }
+
+    function checkUnlocks(text) {
+      if (text === "the man who speaks in hands" && !unlockedCiphers.wingdings) {
+        unlockedCiphers.wingdings = true;
+        alert("Wingdings разблокирован!");
+        updateCipherOptions();
+      }
+
+      for (const phrase of minecraftPhrases) {
+        if (text.includes(phrase) && !unlockedCiphers.minecraft) {
+          unlockedCiphers.minecraft = true;
+          alert("Minecraft шифр разблокирован!");
+          updateCipherOptions();
+          break;
         }
-
-        function caesarCipher(str, shift, encrypt) {
-            const ruAlphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
-            const enAlphabet = 'abcdefghijklmnopqrstuvwxyz';
-            const ruAlphabetUpper = ruAlphabet.toUpperCase();
-            const enAlphabetUpper = enAlphabet.toUpperCase();
-
-            return str.split('').map(char => {
-                if (ruAlphabet.includes(char)) {
-                    return shiftChar(char, shift, encrypt, ruAlphabet);
-                } else if (ruAlphabetUpper.includes(char)) {
-                    return shiftChar(char, shift, encrypt, ruAlphabetUpper);
-                } else if (enAlphabet.includes(char)) {
-                    return shiftChar(char, shift, encrypt, enAlphabet);
-                } else if (enAlphabetUpper.includes(char)) {
-                    return shiftChar(char, shift, encrypt, enAlphabetUpper);
-                } else {
-                    return char; // Не изменяем символы, не входящие в алфавит
-                }
-            }).join('');
+      }
+    }
+    function updateCipherInfo() {
+      const cipherType = document.getElementById('cipherType').value;
+      document.getElementById('cipherInfo').textContent = cipherInfoMap[cipherType] || '';
+      document.getElementById('minecraftLink').style.display = (cipherType === 'minecraft') ? 'block' : 'none';
+    
+      // Темы
+      document.body.classList.remove('theme-minecraft', 'theme-wingdings');
+      if (cipherType === 'minecraft') document.body.classList.add('theme-minecraft');
+      if (cipherType === 'wingdings') document.body.classList.add('theme-wingdings');
+    
+      // Только output в Wingdings
+      const outputText = document.getElementById('outputText');
+      if (cipherType === 'wingdings') {
+        outputText.style.fontFamily = 'Wingdings, sans-serif';
+      } else {
+        outputText.style.fontFamily = ''; // сбросить на стандартный
+      }
+    
+      // Заголовок
+      const titleHeader = document.getElementById('titleHeader');
+      if (titleHeader) {
+        if (cipherType === 'wingdings') {
+          titleHeader.innerHTML = `<img src="https://i.imgur.com/w0t3t3z.png" alt="Undertale" style="max-width: 100%; height: auto;" />`;
+        } else if (cipherType === 'minecraft') {
+          titleHeader.innerHTML = `<img src="https://image.pngaaa.com/440/5272440-middle.png" alt="Minecraft" style="max-width: 100%; height: auto;" />`;
+        } else {
+          titleHeader.innerHTML = `<div id="titleHeader"><h1>Шифрование и расшифрование текста</h1></div>
+`;
         }
+      }
+    }
 
-        function shiftChar(char, shift, encrypt, alphabet) {
-            const shiftAmount = encrypt ? shift : -shift;
-            const index = alphabet.indexOf(char);
-            const newIndex = (index + shiftAmount + alphabet.length) % alphabet.length;
-            return alphabet[newIndex];
-        }
 
-        function morseEncode(text) {
-            const morseMap = {
-                'А': '.-', 'Б': '-...', 'В': '.--', 'Г': '--.', 'Д': '-..', 'Е': '.', 'Ж': '...-',
-                'З': '--..', 'И': '..', 'Й': '.---', 'К': '-.-', 'Л': '.-..', 'М': '--', 'Н': '-.',
-                'О': '---', 'П': '.--.', 'Р': '.-.', 'С': '...', 'Т': '-', 'У': '..-', 'Ф': '..-.',
-                'Х': '....', 'Ц': '-.-.', 'Ч': '---.', 'Ш': '----', 'Щ': '--.-', 'Ъ': '--.--',
-                'Ы': '-.--', 'Ь': '..--', 'Э': '.-.-', 'Ю': '..--..', 'Я': '..--.',
-                ' ': '/', '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-',
-                '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.'
-            };
 
-            return text.toUpperCase().split('').map(char => morseMap[char] || '').join(' ');
-        }
-
-        function morseDecode(morseCode) {
-            const morseMap = {
-                '.-': 'А', '-...': 'Б', '.--': 'В', '--.': 'Г', '-..': 'Д', '.': 'Е', '...-': 'Ж',
-                '--..': 'З', '..': 'И', '.---': 'Й', '-.-': 'К', '.-..': 'Л', '--': 'М', '-.': 'Н',
-                '---': 'О', '.--.': 'П', '.-.': 'Р', '...': 'С', '-': 'Т', '..-': 'У', '..-.': 'Ф',
-                '....': 'Х', '-.-.': 'Ц', '---.': 'Ч', '----': 'Ш', '--.-': 'Щ', '--.--': 'Ъ',
-                '-.--': 'Ы', '..--': 'Ь', '.-.-': 'Э', '..--..': 'Ю', '..--.': 'Я',
-                '/': ' ', '-----': '0', '.----': '1', '..---': '2', '...--': '3', '....-': '4',
-                '.....': '5', '-....': '6', '--...': '7', '---..': '8', '----.': '9'
-            };
-
-            return morseCode.split(' ').map(code => morseMap[code] || '').join('');
-        }
-
-        function binaryEncode(text) {
-            return text.split('').map(char => {
-                return char.charCodeAt(0).toString(2).padStart(8, '0');
-            }).join(' ');
-        }
-
-        function binaryDecode(binary) {
-            return binary.split(' ').map(bin => {
-                return String.fromCharCode(parseInt(bin, 2));
-            }).join('');
-        }
-    </script>
+    window.onload = updateCipherInfo;
+  </script>
 </body>
 </html>
